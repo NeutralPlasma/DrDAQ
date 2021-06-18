@@ -14,18 +14,20 @@ namespace DrDAQ.models
         // Default value for interval is 5000ms or 5 Seconds.
         public DrDAQModel(int refresh_interval = 5000)
         {
+
+            // basic timer for updating data every x time.
             var aTimer = new Timer();
             aTimer.Interval = refresh_interval;
             aTimer.Elapsed += read;
             aTimer.AutoReset = true;
             aTimer.Enabled = true;
 
+            // Open USB connection
             openConnection();
 
 
 
-
-
+            // how many samples to store.
             uint totalSamples = 200;
             uint us_for_block = 100000;
 
@@ -139,9 +141,9 @@ namespace DrDAQ.models
         public void closeConnection()
         {
 
-            DrDAQImports.SetRGBLED(handleDAQ1, 255, 0, 0);
-            DrDAQImports.EnableRGBLED(handleDAQ1, 0);
-            DrDAQImports.CloseUnit(handleDAQ1);
+            DrDAQImports.SetRGBLED(handleDAQ1, 255, 0, 0); // Change back to red led
+            DrDAQImports.EnableRGBLED(handleDAQ1, 0); // Disable led
+            DrDAQImports.CloseUnit(handleDAQ1); // Close USB connection
         }
 
 
@@ -157,12 +159,13 @@ namespace DrDAQ.models
 
             while (isReady == 0)
             {
-                DrDAQImports.Ready(handleDAQ1, out isReady);
+                DrDAQImports.Ready(handleDAQ1, out isReady); // Wait for device to be ready.
             }
 
-
+            // Get all values.
             DrDAQImports.GetValues(handleDAQ1, out data[0], ref numSamplesCollected, out overflow, out triggerIndex);
 
+            // Parse each value from all the values.
             DrDAQImports.GetSingle(handleDAQ1, DrDAQImports.Inputs.USB_DRDAQ_CHANNEL_EXT1, out ext1, out overflow);
             DrDAQImports.GetSingle(handleDAQ1, DrDAQImports.Inputs.USB_DRDAQ_CHANNEL_EXT2, out ext2, out overflow);
             DrDAQImports.GetSingle(handleDAQ1, DrDAQImports.Inputs.USB_DRDAQ_CHANNEL_EXT3, out ext3, out overflow);
