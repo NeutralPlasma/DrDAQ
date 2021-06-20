@@ -17,7 +17,7 @@ namespace DrDAQ
 
 
             var aTimer = new System.Timers.Timer();
-            aTimer.Interval = 1;
+            aTimer.Interval = 10;
             aTimer.Elapsed += update;
             aTimer.AutoReset = true;
             aTimer.Enabled = true;
