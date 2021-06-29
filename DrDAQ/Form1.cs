@@ -8,10 +8,12 @@ namespace DrDAQ
     public partial class Form1 : Form
     {
         private DrDAQModel data = null;
+        private DrDAQModel data2 = null;
         public Form1()
         {
             InitializeComponent();
             data = new DrDAQModel(1000);
+            Console.WriteLine(data.ID[0]);
 
 
 
@@ -27,11 +29,11 @@ namespace DrDAQ
 
         private void update(Object source, System.Timers.ElapsedEventArgs e)
         {
-            double temp = data.Temparature / 10.0;
-            double ext_temp = data.External1 / 10.0;
-            double light = data.LightLevel / 10.0;
-            double mic = data.Microphone_level / 10.0;
-            double ph = data.PH/100.0;
+            double temp = data.Temparature[0] / 10.0;
+            double ext_temp = data.External1[0] / 10.0;
+            double light = data.LightLevel[0] / 10.0;
+            double mic = data.Microphone_level[0] / 10.0;
+            double ph = data.PH[0] / 100.0;
 
 
             label1.Invoke(new Action(() =>
@@ -63,7 +65,7 @@ namespace DrDAQ
 
         private void label1_Click(object sender, EventArgs e)
         {
-            double test = data.Temparature / 10.0;
+            double test = data.Temparature[0] / 10.0;
             label1.Text = "Temparature: " +  test.ToString() + "°C";
         }
 
