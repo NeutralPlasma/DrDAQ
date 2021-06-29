@@ -31,6 +31,7 @@ namespace DrDAQ
             double ext_temp = data.External1 / 10.0;
             double light = data.LightLevel / 10.0;
             double mic = data.Microphone_level / 10.0;
+            double ph = data.PH/100.0;
 
 
             label1.Invoke(new Action(() =>
@@ -51,6 +52,10 @@ namespace DrDAQ
             label4.Invoke(new Action(() =>
             {
                 label4.Text = "Microphone: " + mic.ToString();
+            }));
+            label5.Invoke(new Action(() =>
+            {
+                label5.Text = "PH/Redox: " + ph.ToString();
             }));
 
 
