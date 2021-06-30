@@ -6,14 +6,14 @@ namespace DrDAQ.models
 {
     class DrDAQModel
     {
-
+        private Timer aTimer = null;
         // Refresh interval is supposed to be in ms.
         // Default value for interval is 5000ms or 5 Seconds.
         public DrDAQModel(int refresh_interval = 5000, short size = 1)
         {
 
             // basic timer for updating data every x time.
-            var aTimer = new Timer();
+            aTimer = new Timer();
             aTimer.Interval = refresh_interval;
             aTimer.Elapsed += read;
             aTimer.AutoReset = true;
@@ -44,21 +44,11 @@ namespace DrDAQ.models
 
         private short handleDAQ1 = 0;
         private short size = 0;
-        private short[] DAQ = { 0, 0, 0, 0, 0 };
+        private short[] DAQ = { 0, 0, 0, 0, 0,0,0,0 };
         private uint numSamplesCollected = 0;
 
 
-        // private dictonaries
-        private Dictionary<string, short> ext1_dic = new Dictionary<string, short>();
-        private Dictionary<string, short> ext2_dic = new Dictionary<string, short>();
-        private Dictionary<string, short> ext3_dic = new Dictionary<string, short>();
-        private Dictionary<string, short> scope_dic = new Dictionary<string, short>();
-        private Dictionary<string, short> ph_dic = new Dictionary<string, short>();
-        private Dictionary<string, short> res_dic = new Dictionary<string, short>();
-        private Dictionary<string, short> light_dic = new Dictionary<string, short>();
-        private Dictionary<string, short> temp_dic = new Dictionary<string, short>();
-        private Dictionary<string, short> mic_wave_dic = new Dictionary<string, short>();
-        private Dictionary<string, short> mic_level_dic = new Dictionary<string, short>();
+
 
         // private values.
         private short[] ext1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -162,6 +152,7 @@ namespace DrDAQ.models
 
         public void closeConnection()
         {
+            aTimer.Stop();
             for (int i = 0; i < size; i++)
             {
                 DrDAQImports.SetRGBLED(DAQ[i], 255, 0, 0); // Change back to red led
@@ -210,13 +201,27 @@ namespace DrDAQ.models
             }
 
             current++;
-            if(current > size)
+            if(current >= size)
             {
                 current = 0;
             }
 
         }
 
+        public int getIndexBySerial(string serial)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                if (serials[i].Equals(serial))
+                {
+                    return i;
+                }
+            }
+            return 0;
+        }
+
 
     }
+
+    
 }
