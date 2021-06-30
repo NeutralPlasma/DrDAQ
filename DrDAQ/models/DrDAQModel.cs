@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace DrDAQ.models
@@ -51,17 +48,17 @@ namespace DrDAQ.models
         private uint numSamplesCollected = 0;
 
 
-        // USB_DRDAQ_CHANNEL_EXT1 = 1,             //Ext. sensor 1
-        // USB_DRDAQ_CHANNEL_EXT2,                     //Ext. sensor 2
-        // USB_DRDAQ_CHANNEL_EXT3,                     //Ext. sensor 3
-        // USB_DRDAQ_CHANNEL_SCOPE,                    //Scope channel
-        // USB_DRDAQ_CHANNEL_PH,                           //PH
-        // USB_DRDAQ_CHANNEL_RES,                      //Resistance
-        // USB_DRDAQ_CHANNEL_LIGHT,                    //Light
-        // USB_DRDAQ_CHANNEL_TEMP,                     //Thermistor
-        // USB_DRDAQ_CHANNEL_MIC_WAVE,             //Microphone waveform
-        // USB_DRDAQ_CHANNEL_MIC_LEVEL,            //Microphone level
-        // USB_DRDAQ_MAX_CHANNELS = USB_DRDAQ_CHANNEL_MIC_LEVEL
+        // private dictonaries
+        private Dictionary<string, short> ext1_dic = new Dictionary<string, short>();
+        private Dictionary<string, short> ext2_dic = new Dictionary<string, short>();
+        private Dictionary<string, short> ext3_dic = new Dictionary<string, short>();
+        private Dictionary<string, short> scope_dic = new Dictionary<string, short>();
+        private Dictionary<string, short> ph_dic = new Dictionary<string, short>();
+        private Dictionary<string, short> res_dic = new Dictionary<string, short>();
+        private Dictionary<string, short> light_dic = new Dictionary<string, short>();
+        private Dictionary<string, short> temp_dic = new Dictionary<string, short>();
+        private Dictionary<string, short> mic_wave_dic = new Dictionary<string, short>();
+        private Dictionary<string, short> mic_level_dic = new Dictionary<string, short>();
 
         // private values.
         private short[] ext1 = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -74,12 +71,18 @@ namespace DrDAQ.models
         private short[] temp = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         private short[] mic_wave = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         private short[] mic_level = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        private string[] serials = { "", "", "", "", "", "", "" };
 
 
         // Public variables that you can access to get data from
         public short[] ID
         {
             get { return DAQ; }
+        }
+
+        public string[] Serials
+        {
+            get { return serials; }
         }
 
         public short[] External1 {
@@ -133,20 +136,17 @@ namespace DrDAQ.models
                 Console.WriteLine("Getting..");
                 DrDAQImports.GetUnitInfo(handleDAQ, line, 80, out requiredSize, DrDAQImports.Info.USBDrDAQ_BATCH_AND_SERIAL);
 
-                if (handleDAQ1 == 0)
-                {
-                 //   handleDAQ1 = handleDAQ;
-                }
 
                 for(int i = 0; i <= size; i++)
                 {
                     if(DAQ[i] == 0)
                     {
                         DAQ[i] = handleDAQ;
+                        serials[i] = line.ToString();
                         i = size + 1;
                     }
                 }
-
+                Console.WriteLine(line);
 
                 //Console.WriteLine("1: " + handleDAQ1);
             }
@@ -154,7 +154,7 @@ namespace DrDAQ.models
             for (int i = 0; i < size; i++)
             {
                 DrDAQImports.EnableRGBLED(DAQ[i], 1);
-                DrDAQImports.SetRGBLED(DAQ[i], 7, 252, 3);
+                DrDAQImports.SetRGBLED(DAQ[i], 7, 100, 3);
             }
 
 
@@ -194,6 +194,7 @@ namespace DrDAQ.models
 
                 // Get all values.
                 DrDAQImports.GetValues(daq, out data[0], ref numSamplesCollected, out overflow, out triggerIndex);
+
 
                 // Parse each value from all the values.
                 DrDAQImports.GetSingle(daq, DrDAQImports.Inputs.USB_DRDAQ_CHANNEL_EXT1, out ext1[i], out overflow);

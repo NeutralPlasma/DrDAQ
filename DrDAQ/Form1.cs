@@ -12,8 +12,8 @@ namespace DrDAQ
         public Form1()
         {
             InitializeComponent();
-            data = new DrDAQModel(1000);
-            Console.WriteLine(data.ID[0]);
+            data = new DrDAQModel(100, 2);
+            //Console.WriteLine(data.ID[0]);
 
 
 
@@ -23,6 +23,14 @@ namespace DrDAQ
             aTimer.Elapsed += update;
             aTimer.AutoReset = true;
             aTimer.Enabled = true;
+
+            String numbers = "";
+            for (int i = 0; i < 2; i++)
+            {
+                numbers = numbers + data.Serials[i].ToString() + "|";
+            }
+
+            label6.Text = numbers;
 
 
         }
